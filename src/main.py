@@ -9,15 +9,29 @@ def print_set_map(title, set_map):
         values = ", ".join(sorted(set_map[symbol]))
         print(f"{symbol}: {{ {values} }}")
 
+
+def parse_args(argv):
+    filename = 'src/sample_code.mpy'
+    trace = True
+    show_grammar = False
+
+    for arg in argv:
+        if arg == '--no-trace':
+            trace = False
+        elif arg == '--show-grammar':
+            show_grammar = True
+        elif not arg.startswith('--'):
+            filename = arg
+
+    return filename, trace, show_grammar
+
 def main():
+    filename, trace, show_grammar = parse_args(sys.argv[1:])
     try:
-        filename = sys.argv[1] if len(sys.argv) > 1 else 'src/sample_code.mpy'
         with open(filename, 'r') as file:
             source_code = file.read()
-        # with open('src/sample_code.mpy', 'r') as file:
-        #     source_code = file.read()
     except FileNotFoundError:
-        print("Error: sample_code.mpy not found.")
+        print(f"Error: input file not found: {filename}")
         return
     
     #1. TOKENISATION
@@ -50,22 +64,25 @@ def main():
     for token in tokens:
         print(f"{token.line:<{line_width}}  {token.value:<{lexeme_width}}  {token.type:<{token_width}}")
 
-    print("\n----Parse Tree ----")
     #2. PARSER PHASE
-    parser = Parser(scanner_for_parser)
+    parser = Parser(scanner_for_parser, trace=trace)
 
-    print_set_map("FIRST Sets", parser.grammar.first)
-    print_set_map("FOLLOW Sets", parser.grammar.follow)
+    if show_grammar:
+        print_set_map("FIRST Sets", parser.grammar.first)
+        print_set_map("FOLLOW Sets", parser.grammar.follow)
 
-    print("\n---- LL(1) Parsing Table (filled entries) ----")
-    for nonterminal in sorted(parser.grammar.parsing_table.keys()):
-        row = parser.grammar.parsing_table[nonterminal]
-        for terminal in sorted(row.keys()):
-            production = " ".join(row[terminal])
-            print(f"M[{nonterminal}, {terminal}] = {production}")
+        print("\n---- LL(1) Parsing Table (filled entries) ----")
+        for nonterminal in sorted(parser.grammar.parsing_table.keys()):
+            row = parser.grammar.parsing_table[nonterminal]
+            for terminal in sorted(row.keys()):
+                production = " ".join(row[terminal])
+                print(f"M[{nonterminal}, {terminal}] = {production}")
 
     try:
+        if trace:
+            print("\n---- Parser Trace (Scanner Input + Parser Actions) ----")
         parse_tree = parser.parse()
+        print("\n---- Parse Tree ----")
         parse_tree.print_tree()
         if parser.errors:
             print("\nPARSING COMPLETED WITH RECOVERY")

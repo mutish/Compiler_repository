@@ -49,17 +49,41 @@ The parser is table-driven LL(1) (predictive, stack-based).
 
 ## How To Run
 
-1. Open a terminal in the project root:
+1. Open a terminal in the project root.
+
+Linux/macOS:
 
 ```bash
 cd /your_project_path/compiler
 ```
 
-2. (Optional) Create and activate a virtual environment:
+Windows (PowerShell or Command Prompt):
+
+```powershell
+cd C:\path\to\compiler
+```
+
+2. (Optional) Create and activate a virtual environment.
+
+Linux/macOS:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+```
+
+Windows PowerShell:
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+Windows Command Prompt (CMD):
+
+```bat
+python -m venv venv
+venv\Scripts\activate.bat
 ```
 
 3. Run with the default sample file:
@@ -68,10 +92,22 @@ source venv/bin/activate
 python3 src/main.py
 ```
 
+Windows:
+
+```powershell
+python src/main.py
+```
+
 4. Run with a custom input file:
 
 ```bash
 python3 src/main.py path/to/your_input_file.mpy
+```
+
+Windows:
+
+```powershell
+python src/main.py path\to\your_input_file.mpy
 ```
 
 ## Runtime Output
