@@ -65,7 +65,7 @@ def main():
         print(f"{token.line:<{line_width}}  {token.value:<{lexeme_width}}  {token.type:<{token_width}}")
 
     #2. PARSER PHASE
-    parser = Parser(scanner_for_parser, trace=trace)
+    parser = Parser(scanner_for_parser)
 
     if show_grammar:
         print_set_map("FIRST Sets", parser.grammar.first)
